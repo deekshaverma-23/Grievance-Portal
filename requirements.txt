@@ -1,0 +1,10 @@
+langchain-google-genai
+python-dotenv
+langchain-google-genai 
+langchain-chroma
+pypdf 
+unstructured 
+langchain-community
+langgraph
+sqlalchemy 
+psycopg2-binary

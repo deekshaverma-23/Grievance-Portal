@@ -7,10 +7,8 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import StateGraph, END
 
-# Import the database functions you created in the previous step
 from database import init_db, save_complaint
 
-# Define the state of our graph
 class GraphState(TypedDict):
     complaint_text: str
     sentiment: str
@@ -18,20 +16,16 @@ class GraphState(TypedDict):
     resolution: str
     context_docs: List[str]
 
-# Load environment variables
 load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
 if not api_key:
     print("Error: Google API key not found. Please check your .env file.")
     exit()
 
-# Initialize the LLM
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=api_key)
 
-# === Define the nodes (agents) as functions ===
 
 def sentiment_node(state: GraphState):
-    # (Your existing code for sentiment_node)
     complaint_text = state['complaint_text']
     sentiment_prompt = ChatPromptTemplate.from_template(
         "Analyze the sentiment of the following text as positive, neutral, or negative. Do not add any extra words. Just the sentiment.\n\nText: {text}"
@@ -41,19 +35,15 @@ def sentiment_node(state: GraphState):
     return {"sentiment": sentiment_result.strip().lower()}
 
 def priority_node(state: GraphState):
-    # (Your existing code for priority_node)
     sentiment = state.get('sentiment', 'neutral')
     priority = "high" if sentiment == "negative" else "low"
     return {"priority": priority}
 
 def rag_node(state: GraphState):
-    # (Your existing code for rag_node)
-    # You can integrate your actual RAG pipeline here from step 2
     retrieved_docs = ["Sample document about road maintenance policies."]
     return {"context_docs": retrieved_docs}
 
 def resolution_node(state: GraphState):
-    # (Your existing code for resolution_node)
     complaint_text = state['complaint_text']
     context_docs = state['context_docs']
     
@@ -65,28 +55,19 @@ def resolution_node(state: GraphState):
     return {"resolution": resolution_result}
 
 def save_to_db_node(state: GraphState):
-    # This node saves the processed data to the database
     save_complaint(
         complaint_text=state['complaint_text'],
         sentiment=state['sentiment'],
         priority=state['priority'],
         resolution=state['resolution']
     )
-    return {} # No new state to add
+    return {} 
 
 def notify_officials_node(state: GraphState):
-    # This node simulates sending a notification
-    print(f"---NOTIFICATION SENT---")
-    print(f"Complaint: {state['complaint_text']}")
-    print(f"Priority: {state['priority']}")
-    print(f"Resolution Plan: {state['resolution'][:50]}...")
-    print("-----------------------")
-    return {} # No new state to add
+    return {} 
 
-# === Build the graph ===
 workflow = StateGraph(GraphState)
 
-# Add the nodes to the graph
 workflow.add_node("sentiment_analysis", sentiment_node)
 workflow.add_node("priority_determination", priority_node)
 workflow.add_node("rag_retrieval", rag_node)
@@ -94,7 +75,6 @@ workflow.add_node("resolution_generation", resolution_node)
 workflow.add_node("save_to_db", save_to_db_node)
 workflow.add_node("notify_officials", notify_officials_node)
 
-# Define the sequence of nodes
 workflow.set_entry_point("sentiment_analysis")
 workflow.add_edge("sentiment_analysis", "priority_determination")
 workflow.add_edge("priority_determination", "rag_retrieval")
@@ -103,5 +83,4 @@ workflow.add_edge("resolution_generation", "save_to_db")
 workflow.add_edge("save_to_db", "notify_officials")
 workflow.add_edge("notify_officials", END)
 
-# Compile the graph
 app = workflow.compile()

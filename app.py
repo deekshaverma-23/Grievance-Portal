@@ -2,14 +2,11 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 
-# Import your LangGraph application and the database functions
 from multi_agent import app
 from database import init_db, get_all_complaints
 
-# Load environment variables
 load_dotenv()
 
-# Initialize the database
 init_db()
 
 st.set_page_config(
@@ -18,18 +15,15 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Use st.query_params to access the URL query parameters
 query_params = st.query_params
 page = query_params.get("page", "user")
 
-# Sidebar for navigation
 st.sidebar.title("Navigation")
 st.sidebar.markdown(f"[User Page](?page=user)")
 st.sidebar.markdown(f"[Admin Page](?page=admin)")
 
-# --- USER PAGE ---
 def user_page():
-    st.title("Citizen Complaint Submission ✍️")
+    st.title("Citizen Complaint Submission ")
     st.markdown("Submit your complaint below and get an instant AI-generated resolution plan.")
 
     with st.form(key='grievance_form'):
@@ -48,26 +42,22 @@ def user_page():
             except Exception as e:
                 st.error(f"An error occurred: {e}")
 
-# --- ADMIN PAGE ---
 def admin_page():
-    st.title("Admin Dashboard 📋")
+    st.title("Admin Dashboard")
     st.markdown("View and manage all submitted complaints.")
 
     st.header("All Submitted Complaints")
     
-    # Retrieve all complaints from the database
     complaints = get_all_complaints()
 
     if not complaints:
         st.info("No complaints have been submitted yet.")
     else:
-        # Create a DataFrame for a cleaner table view
         import pandas as pd
         df = pd.DataFrame(complaints, columns=['ID', 'Complaint Text', 'Sentiment', 'Priority', 'Resolution', 'Timestamp'])
         
         st.dataframe(df, use_container_width=True)
 
-# Main app logic to display the correct page
 if page == "user":
     user_page()
 elif page == "admin":
