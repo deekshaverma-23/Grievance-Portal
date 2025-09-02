@@ -33,9 +33,7 @@ Python 3.8+
 Google Gemini API Key (available for free via Google AI Studio)
 
 ## Steps
-1. Clone the Repository -
-   git clone https://github.com/<YourUsername>/<YourRepositoryName>.git
-   cd <YourRepositoryName>
+1. Clone the Repository
 2. Create and Activate a Virtual Environment -
    python -m venv venv
 3. Install Dependencies -
