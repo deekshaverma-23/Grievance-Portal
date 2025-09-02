@@ -28,33 +28,18 @@ Resolution Agent: An LLM, augmented with the retrieved context, generates a comp
 Database & Notification: The final analysis and resolution are saved to the database and a notification is simulated to alert officials.
 
 ## Setup & Installation
-Prerequisites
+## Prerequisites
 Python 3.8+
-
 Google Gemini API Key (available for free via Google AI Studio)
 
-Steps
-Clone the Repository
-
-Bash
-
-git clone https://github.com/<YourUsername>/<YourRepositoryName>.git
-cd <YourRepositoryName>
-Create and Activate a Virtual Environment
-
-Bash
-
-python -m venv venv
-# For Windows:
-.\venv\Scripts\activate
-# For macOS/Linux:
-source venv/bin/activate
-Install Dependencies
-
-Bash
-
-pip install -r requirements.txt
-(Note: You can generate this file by running pip freeze > requirements.txt after installing all your libraries).
+## Steps
+1. Clone the Repository -
+   git clone https://github.com/<YourUsername>/<YourRepositoryName>.git
+   cd <YourRepositoryName>
+2. Create and Activate a Virtual Environment -
+   python -m venv venv
+3. Install Dependencies -
+   pip install -r requirements.txt
 
 Configure API Key
 
