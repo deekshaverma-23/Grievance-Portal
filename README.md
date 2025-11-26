@@ -33,39 +33,21 @@ Python 3.8+
 Google Gemini API Key (available for free via Google AI Studio)
 
 ## Steps
-1. Clone the Repository -
-   git clone https://github.com/<YourUsername>/<YourRepositoryName>.git
-   cd <YourRepositoryName>
+1. Clone the Repository
 2. Create and Activate a Virtual Environment -
    python -m venv venv
 3. Install Dependencies -
    pip install -r requirements.txt
-
-Configure API Key
-
-Create a file named .env in the project's root directory.
-
-Add your Google API key to the file:
-
-GOOGLE_API_KEY="your_api_key_here"
-Prepare the Document Corpus
-
-Place your government policy and past resolution documents (.txt files) into the docs folder.
-
-Run the RAG script to create the vector database:
-
-Bash
-
-python rag_pipeline.py
-Initialize the Database
-
-Bash
-
-python database.py
+4. Configure API Key -
+   Add your Google API key to the .env file:
+   GOOGLE_API_KEY="your_api_key_here"
+5. Run the RAG script to create the vector database - 
+   python rag_pipeline.py
+6. Initialize the Database -
+   python database.py
+   
 ## Running the Application
-To start the application, simply run the Streamlit command.
-
-Bash
-
+To start the application, simply run the Streamlit command - 
 streamlit run app.py
+
 This will launch the app in your browser, where you can navigate between the user complaint submission page and the admin dashboard.
