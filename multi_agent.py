@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 from typing import TypedDict, Annotated, List
 from langchain_core.messages import BaseMessage
+from langchain_chroma import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -22,8 +24,28 @@ if not api_key:
     print("Error: Google API key not found. Please check your .env file.")
     exit()
 
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=api_key)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=api_key)
 
+embedding_model = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2",
+)
+
+vectorstore = Chroma(
+    persist_directory="./chroma_db",
+    embedding_function=embedding_model
+)
+retriever = vectorstore.as_retriever()
+
+def rag_node(state: GraphState):
+    complaint_text = state['complaint_text']
+    
+    # Use the global retriever initialized above
+    docs = retriever.invoke(complaint_text)
+    
+    # Convert retrieved Document objects to a list of page content strings
+    context_docs = [doc.page_content for doc in docs]
+    
+    return {"context_docs": context_docs}
 
 def sentiment_node(state: GraphState):
     complaint_text = state['complaint_text']

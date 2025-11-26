@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -26,7 +26,10 @@ docs = loader.load()
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 split_docs = text_splitter.split_documents(docs)
 
-embedding_model = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
+embedding_model = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2",
+    # model_kwargs=model_kwargs # Optional: specify device
+)
 
 vectorstore = Chroma.from_documents(
     documents=split_docs,
@@ -47,7 +50,7 @@ Context:
 """
 rag_prompt = ChatPromptTemplate.from_template(prompt_template)
 
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=api_key)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=api_key)
 
 from langchain_core.runnables import RunnablePassthrough
 
@@ -64,5 +67,3 @@ print("Thinking...")
 response = rag_chain.invoke(citizen_query)
 print("\nAI Assistant's Response:")
 print(response)
-
-vectorstore.delete_collection()

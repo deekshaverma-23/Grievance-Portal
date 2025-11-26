@@ -8,3 +8,6 @@ langchain-community
 langgraph
 sqlalchemy 
 psycopg2-binary
+streamlit
+langchain
+langchain-huggingface

@@ -56,7 +56,7 @@ def admin_page():
         import pandas as pd
         df = pd.DataFrame(complaints, columns=['ID', 'Complaint Text', 'Sentiment', 'Priority', 'Resolution', 'Timestamp'])
         
-        st.dataframe(df, use_container_width=True)
+        st.dataframe(df, use_container_width='stretch')
 
 if page == "user":
     user_page()
