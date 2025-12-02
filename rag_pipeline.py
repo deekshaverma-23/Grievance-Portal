@@ -28,7 +28,6 @@ split_docs = text_splitter.split_documents(docs)
 
 embedding_model = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-MiniLM-L6-v2",
-    # model_kwargs=model_kwargs # Optional: specify device
 )
 
 vectorstore = Chroma.from_documents(

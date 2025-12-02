@@ -38,11 +38,9 @@ retriever = vectorstore.as_retriever()
 
 def rag_node(state: GraphState):
     complaint_text = state['complaint_text']
-    
-    # Use the global retriever initialized above
+
     docs = retriever.invoke(complaint_text)
     
-    # Convert retrieved Document objects to a list of page content strings
     context_docs = [doc.page_content for doc in docs]
     
     return {"context_docs": context_docs}
