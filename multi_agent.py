@@ -14,9 +14,13 @@ from database import init_db, save_complaint
 class GraphState(TypedDict):
     complaint_text: str
     sentiment: str
+    severity: str     
+    credibility: str   
     priority: str
+    category: str
     resolution: str
     context_docs: List[str]
+
 
 load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
@@ -45,6 +49,62 @@ def rag_node(state: GraphState):
     
     return {"context_docs": context_docs}
 
+def severity_node(state: GraphState):
+    prompt = ChatPromptTemplate.from_template(
+        """
+        Classify the REAL-WORLD SEVERITY of the complaint based on impact,
+        NOT emotional language.
+
+        Severity levels:
+        - critical: risk to life, healthcare, fire, accidents
+        - high: prolonged disruption of essential services
+        - medium: inconvenience affecting daily life
+        - low: cosmetic or minor issues
+
+        Complaint: {text}
+
+        Return only one word.
+        """
+    )
+    chain = prompt | llm | StrOutputParser()
+    severity = chain.invoke({"text": state['complaint_text']})
+    return {"severity": severity.strip().lower()}
+
+def credibility_node(state: GraphState):
+    prompt = ChatPromptTemplate.from_template(
+        """
+        Analyze the following complaint and determine whether it uses
+        exaggeration, sarcasm, or dramatic language disproportionate to the issue.
+
+        Complaint:
+        {complaint}
+
+        Return ONLY one of the following words:
+        factual
+        mildly exaggerated
+        highly exaggerated
+        """
+    )
+
+    chain = prompt | llm | StrOutputParser()
+
+    credibility = chain.invoke({
+        "complaint": state["complaint_text"]
+    })
+
+    return {"credibility": credibility.strip().lower()}
+
+
+
+def impact_signals(text):
+    signals = {
+        "life_risk": any(w in text for w in ["oxygen", "hospital", "death", "fire"]),
+        "duration": any(w in text for w in ["days", "weeks", "hours"]),
+        "scale": any(w in text for w in ["entire", "all", "half", "multiple"]),
+    }
+    return signals
+
+
 def sentiment_node(state: GraphState):
     complaint_text = state['complaint_text']
     sentiment_prompt = ChatPromptTemplate.from_template(
@@ -55,52 +115,112 @@ def sentiment_node(state: GraphState):
     return {"sentiment": sentiment_result.strip().lower()}
 
 def priority_node(state: GraphState):
-    sentiment = state.get('sentiment', 'neutral')
-    priority = "high" if sentiment == "negative" else "low"
-    return {"priority": priority}
+    severity = state.get("severity", "low")
+    credibility = state.get("credibility", "factual")
 
-def rag_node(state: GraphState):
-    retrieved_docs = ["Sample document about road maintenance policies."]
-    return {"context_docs": retrieved_docs}
+    if severity == "critical":
+        return {"priority": "critical"}
+    if severity == "high" and credibility != "highly exaggerated":
+        return {"priority": "high"}
+    if severity == "medium":
+        return {"priority": "medium"}
+    return {"priority": "low"}
+
+
 
 def resolution_node(state: GraphState):
-    complaint_text = state['complaint_text']
-    context_docs = state['context_docs']
-    
-    resolution_prompt = ChatPromptTemplate.from_template(
-        "You are an AI assistant. Based on the complaint and context, generate a detailed resolution plan.\n\nComplaint: {complaint_text}\n\nContext: {context_docs}"
+    prompt = ChatPromptTemplate.from_template(
+        """
+        You are a government grievance resolution system.
+
+        Generate a resolution plan in VALID JSON with EXACTLY these keys:
+        - summary (string, one sentence)
+        - immediate_actions (array of 2–4 short steps)
+        - responsible_department (string)
+        - sla_hours (number)
+
+        Complaint: {complaint}
+        Context: {context}
+
+        Rules:
+        - Do NOT add extra text
+        - Do NOT explain the JSON
+        - Output ONLY valid JSON
+        """
     )
-    resolution_chain = resolution_prompt | llm | StrOutputParser()
-    resolution_result = resolution_chain.invoke({"complaint_text": complaint_text, "context_docs": context_docs})
-    return {"resolution": resolution_result}
+
+    context = "\n".join(state["context_docs"][:3])
+
+    chain = prompt | llm | StrOutputParser()
+
+    resolution = chain.invoke({
+        "complaint": state["complaint_text"],
+        "context": context
+    })
+
+    return {"resolution": resolution}
+
 
 def save_to_db_node(state: GraphState):
     save_complaint(
         complaint_text=state['complaint_text'],
         sentiment=state['sentiment'],
+        severity=state['severity'],
+        credibility=state['credibility'],
+        category=state['category'],
         priority=state['priority'],
         resolution=state['resolution']
     )
-    return {} 
+    return {}
+
+
+def category_node(state: GraphState):
+    prompt = ChatPromptTemplate.from_template(
+        "Classify the complaint into one category only:\n"
+        "Roads, Electricity, Water, Sanitation, Healthcare, Law & Order.\n\n"
+        "Complaint: {text}"
+    )
+    chain = prompt | llm | StrOutputParser()
+    category = chain.invoke({"text": state['complaint_text']})
+    return {"category": category.strip()}
+
 
 def notify_officials_node(state: GraphState):
-    return {} 
+    category = state.get("category", "Unknown")
+    priority = state.get("priority", "Unknown")
+
+    print(f"""
+    📩 New Complaint Assigned
+    Department: {category}
+    Priority: {priority}
+    """)
+    return {}
+
+
 
 workflow = StateGraph(GraphState)
 
 workflow.add_node("sentiment_analysis", sentiment_node)
+workflow.add_node("severity_assessment", severity_node)
+workflow.add_node("credibility_assessment", credibility_node)
 workflow.add_node("priority_determination", priority_node)
+workflow.add_node("category_classification", category_node)
 workflow.add_node("rag_retrieval", rag_node)
 workflow.add_node("resolution_generation", resolution_node)
 workflow.add_node("save_to_db", save_to_db_node)
 workflow.add_node("notify_officials", notify_officials_node)
 
 workflow.set_entry_point("sentiment_analysis")
-workflow.add_edge("sentiment_analysis", "priority_determination")
-workflow.add_edge("priority_determination", "rag_retrieval")
+
+workflow.add_edge("sentiment_analysis", "severity_assessment")
+workflow.add_edge("severity_assessment", "credibility_assessment")
+workflow.add_edge("credibility_assessment", "priority_determination")
+workflow.add_edge("priority_determination", "category_classification")
+workflow.add_edge("category_classification", "rag_retrieval")
 workflow.add_edge("rag_retrieval", "resolution_generation")
 workflow.add_edge("resolution_generation", "save_to_db")
 workflow.add_edge("save_to_db", "notify_officials")
 workflow.add_edge("notify_officials", END)
+
 
 app = workflow.compile()

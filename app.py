@@ -1,6 +1,8 @@
 import streamlit as st
 import os
 from dotenv import load_dotenv
+import pandas as pd
+import json
 
 from multi_agent import app
 from database import init_db, get_all_complaints
@@ -21,6 +23,22 @@ page = query_params.get("page", "user")
 st.sidebar.title("Navigation")
 st.sidebar.markdown(f"[User Page](?page=user)")
 st.sidebar.markdown(f"[Admin Page](?page=admin)")
+
+def format_resolution(res):
+    try:
+        data = json.loads(res)
+
+        return f"""
+        **Summary:** {data['summary']}
+
+        **Immediate Actions:**
+        - {'\n- '.join(data['immediate_actions'])}
+
+        **Department:** {data['responsible_department']}
+        **SLA:** {data['sla_hours']} hours
+        """
+    except:
+        return res
 
 def user_page():
     st.title("Citizen Complaint Submission ")
@@ -53,10 +71,26 @@ def admin_page():
     if not complaints:
         st.info("No complaints have been submitted yet.")
     else:
-        import pandas as pd
-        df = pd.DataFrame(complaints, columns=['ID', 'Complaint Text', 'Sentiment', 'Priority', 'Resolution', 'Timestamp'])
-        
-        st.dataframe(df, use_container_width='stretch')
+        df = pd.DataFrame(
+        complaints,
+        columns=[
+            'ID',
+            'Complaint Text',
+            'Sentiment',
+            'Severity',
+            'Credibility',
+            'Category',
+            'Priority',
+            'Resolution',
+            'Timestamp'
+        ]
+    )
+
+
+    df["Resolution"] = df["Resolution"].apply(format_resolution)
+    st.dataframe(df, use_container_width=True, hide_index=True)
+
+
 
 if page == "user":
     user_page()
