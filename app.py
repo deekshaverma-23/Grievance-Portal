@@ -26,8 +26,8 @@ st.sidebar.markdown(f"[Admin Page](?page=admin)")
 
 def format_resolution(res):
     try:
+        res = res.replace("```json", "").replace("```", "").strip()
         data = json.loads(res)
-
         return f"""
         **Summary:** {data['summary']}
 
@@ -39,6 +39,7 @@ def format_resolution(res):
         """
     except:
         return res
+
 
 def user_page():
     st.title("Citizen Complaint Submission ")

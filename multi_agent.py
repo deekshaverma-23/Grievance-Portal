@@ -182,7 +182,9 @@ def category_node(state: GraphState):
     )
     chain = prompt | llm | StrOutputParser()
     category = chain.invoke({"text": state['complaint_text']})
-    return {"category": category.strip()}
+    clean_category = category.replace("**", "").strip()
+    return {"category": clean_category}
+
 
 
 def notify_officials_node(state: GraphState):
