@@ -176,14 +176,29 @@ def save_to_db_node(state: GraphState):
 
 def category_node(state: GraphState):
     prompt = ChatPromptTemplate.from_template(
-        "Classify the complaint into one category only:\n"
-        "Roads, Electricity, Water, Sanitation, Healthcare, Law & Order.\n\n"
+        "Select exactly ONE category from this list:\n"
+        "Roads, Electricity, Water, Sanitation, Healthcare, Law & Order\n\n"
+        "Return ONLY the category name with no explanation.\n\n"
         "Complaint: {text}"
     )
+
     chain = prompt | llm | StrOutputParser()
-    category = chain.invoke({"text": state['complaint_text']})
-    clean_category = category.replace("**", "").strip()
-    return {"category": clean_category}
+    raw = chain.invoke({"text": state['complaint_text']}).strip()
+
+    # Allowed set
+    allowed = [
+        "Roads", "Electricity", "Water",
+        "Sanitation", "Healthcare", "Law & Order"
+    ]
+
+    # Hard enforcement
+    for a in allowed:
+        if a.lower() in raw.lower():
+            return {"category": a}
+
+    # fallback if LLM drifts
+    return {"category": "Other"}
+
 
 
 
@@ -191,11 +206,11 @@ def notify_officials_node(state: GraphState):
     category = state.get("category", "Unknown")
     priority = state.get("priority", "Unknown")
 
-    print(f"""
-    📩 New Complaint Assigned
-    Department: {category}
-    Priority: {priority}
-    """)
+    # print(f"""
+    # 📩 New Complaint Assigned
+    # Department: {category}
+    # Priority: {priority}
+    # """)
     return {}
 
 

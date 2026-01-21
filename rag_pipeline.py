@@ -60,9 +60,7 @@ rag_chain = (
     | StrOutputParser()
 )
 
-citizen_query = "My street has a big pothole near the park. How can this be resolved?"
-
-print("Thinking...")
-response = rag_chain.invoke(citizen_query)
-print("\nAI Assistant's Response:")
-print(response)
+if __name__ == "__main__":
+    citizen_query = "My street has a big pothole near the park..."
+    response = rag_chain.invoke(citizen_query)
+    print(response)
