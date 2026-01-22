@@ -1,34 +1,26 @@
 import os
 from dotenv import load_dotenv
-from typing import TypedDict, Annotated, List
-from langchain_core.messages import BaseMessage
+from typing import TypedDict, List
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_community.llms import Ollama
 from langgraph.graph import StateGraph, END
 
-from database import init_db, save_complaint
+from database import save_complaint
 
 class GraphState(TypedDict):
     complaint_text: str
     sentiment: str
-    severity: str     
-    credibility: str   
+    severity: str
+    credibility: str
     priority: str
     category: str
     resolution: str
     context_docs: List[str]
 
-
 load_dotenv()
-api_key = os.getenv("GOOGLE_API_KEY")
-if not api_key:
-    print("Error: Google API key not found. Please check your .env file.")
-    exit()
-
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=api_key)
 
 embedding_model = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-MiniLM-L6-v2",
@@ -40,79 +32,96 @@ vectorstore = Chroma(
 )
 retriever = vectorstore.as_retriever()
 
+llm = Ollama(model="mistral")
+
 def rag_node(state: GraphState):
     complaint_text = state['complaint_text']
-
     docs = retriever.invoke(complaint_text)
-    
     context_docs = [doc.page_content for doc in docs]
-    
     return {"context_docs": context_docs}
+
 
 def severity_node(state: GraphState):
     prompt = ChatPromptTemplate.from_template(
         """
-        Classify the REAL-WORLD SEVERITY of the complaint based on impact,
-        NOT emotional language.
-
-        Severity levels:
-        - critical: risk to life, healthcare, fire, accidents
-        - high: prolonged disruption of essential services
-        - medium: inconvenience affecting daily life
-        - low: cosmetic or minor issues
+        Classify severity of the complaint into one of:
+        critical, high, medium, low.
 
         Complaint: {text}
 
-        Return only one word.
+        Return only ONE word.
         """
     )
     chain = prompt | llm | StrOutputParser()
-    severity = chain.invoke({"text": state['complaint_text']})
-    return {"severity": severity.strip().lower()}
+    result = chain.invoke({"text": state['complaint_text']})
+    return {"severity": result.strip().lower()}
 
 def credibility_node(state: GraphState):
     prompt = ChatPromptTemplate.from_template(
         """
-        Analyze the following complaint and determine whether it uses
-        exaggeration, sarcasm, or dramatic language disproportionate to the issue.
+        You are a classifier.
 
-        Complaint:
-        {complaint}
+        Task: Determine whether the complaint language is exaggerated.
 
-        Return ONLY one of the following words:
+        Allowed outputs (return EXACTLY one):
         factual
         mildly exaggerated
         highly exaggerated
+
+        Rules:
+        - Output only ONE of the allowed phrases.
+        - Do NOT add punctuation.
+        - Do NOT explain.
+        - Do NOT add any other text.
+
+        Complaint:
+        {complaint}
         """
     )
 
     chain = prompt | llm | StrOutputParser()
+    result = chain.invoke({"complaint": state["complaint_text"]})
 
-    credibility = chain.invoke({
-        "complaint": state["complaint_text"]
-    })
+    result = result.strip().lower()
 
-    return {"credibility": credibility.strip().lower()}
-
-
-
-def impact_signals(text):
-    signals = {
-        "life_risk": any(w in text for w in ["oxygen", "hospital", "death", "fire"]),
-        "duration": any(w in text for w in ["days", "weeks", "hours"]),
-        "scale": any(w in text for w in ["entire", "all", "half", "multiple"]),
-    }
-    return signals
-
+    if "highly" in result:
+        return {"credibility": "highly exaggerated"}
+    if "mildly" in result:
+        return {"credibility": "mildly exaggerated"}
+    return {"credibility": "factual"}
 
 def sentiment_node(state: GraphState):
-    complaint_text = state['complaint_text']
-    sentiment_prompt = ChatPromptTemplate.from_template(
-        "Analyze the sentiment of the following text as positive, neutral, or negative. Do not add any extra words. Just the sentiment.\n\nText: {text}"
+    prompt = ChatPromptTemplate.from_template(
+        """
+        You are a classifier.
+
+        Task: Determine the sentiment of the complaint.
+
+        Allowed outputs (return EXACTLY one word):
+        positive
+        neutral
+        negative
+
+        Rules:
+        - Output only ONE of the allowed words.
+        - Do NOT add punctuation.
+        - Do NOT explain.
+        - Do NOT add extra text.
+
+        Complaint:
+        {text}
+        """
     )
-    sentiment_chain = sentiment_prompt | llm | StrOutputParser()
-    sentiment_result = sentiment_chain.invoke({"text": complaint_text})
-    return {"sentiment": sentiment_result.strip().lower()}
+
+    chain = prompt | llm | StrOutputParser()
+    result = chain.invoke({"text": state["complaint_text"]})
+    result = result.strip().lower()
+
+    if "positive" in result:
+        return {"sentiment": "positive"}
+    if "neutral" in result:
+        return {"sentiment": "neutral"}
+    return {"sentiment": "negative"}
 
 def priority_node(state: GraphState):
     severity = state.get("severity", "low")
@@ -126,26 +135,62 @@ def priority_node(state: GraphState):
         return {"priority": "medium"}
     return {"priority": "low"}
 
+def category_node(state: GraphState):
+    prompt = ChatPromptTemplate.from_template(
+        """
+        Select ONE category from:
 
+        Roads, Electricity, Water,
+        Sanitation, Healthcare, Law & Order
+
+        Complaint: {text}
+
+        Return ONLY the category name.
+        """
+    )
+    chain = prompt | llm | StrOutputParser()
+    raw = chain.invoke({"text": state['complaint_text']}).strip()
+
+    allowed = [
+        "Roads", "Electricity", "Water",
+        "Sanitation", "Healthcare", "Law & Order"
+    ]
+
+    for a in allowed:
+        if a.lower() in raw.lower():
+            return {"category": a}
+
+    return {"category": "Other"}
 
 def resolution_node(state: GraphState):
     prompt = ChatPromptTemplate.from_template(
         """
-        You are a government grievance resolution system.
+        You are an automated government grievance resolution engine.
 
-        Generate a resolution plan in VALID JSON with EXACTLY these keys:
-        - summary (string, one sentence)
-        - immediate_actions (array of 2–4 short steps)
-        - responsible_department (string)
-        - sla_hours (number)
+        You MUST output a VALID JSON object and NOTHING ELSE.
 
-        Complaint: {complaint}
-        Context: {context}
+        The JSON must contain EXACTLY these keys:
+
+        {{
+        "summary": string,
+        "immediate_actions": array of 2 to 4 short strings,
+        "responsible_department": string,
+        "sla_hours": number
+        }}
 
         Rules:
-        - Do NOT add extra text
-        - Do NOT explain the JSON
-        - Output ONLY valid JSON
+        - Output ONLY raw JSON.
+        - Do NOT include markdown.
+        - Do NOT wrap in ``` blocks.
+        - Do NOT explain anything.
+        - Do NOT add extra keys.
+        - Do NOT add trailing text.
+
+        Complaint:
+        {complaint}
+
+        Retrieved Context:
+        {context}
         """
     )
 
@@ -153,13 +198,14 @@ def resolution_node(state: GraphState):
 
     chain = prompt | llm | StrOutputParser()
 
-    resolution = chain.invoke({
-        "complaint": state["complaint_text"],
-        "context": context
-    })
+    resolution = chain.invoke(
+        {
+            "complaint": state["complaint_text"],
+            "context": context,
+        }
+    )
 
     return {"resolution": resolution}
-
 
 def save_to_db_node(state: GraphState):
     save_complaint(
@@ -174,46 +220,9 @@ def save_to_db_node(state: GraphState):
     return {}
 
 
-def category_node(state: GraphState):
-    prompt = ChatPromptTemplate.from_template(
-        "Select exactly ONE category from this list:\n"
-        "Roads, Electricity, Water, Sanitation, Healthcare, Law & Order\n\n"
-        "Return ONLY the category name with no explanation.\n\n"
-        "Complaint: {text}"
-    )
-
-    chain = prompt | llm | StrOutputParser()
-    raw = chain.invoke({"text": state['complaint_text']}).strip()
-
-    # Allowed set
-    allowed = [
-        "Roads", "Electricity", "Water",
-        "Sanitation", "Healthcare", "Law & Order"
-    ]
-
-    # Hard enforcement
-    for a in allowed:
-        if a.lower() in raw.lower():
-            return {"category": a}
-
-    # fallback if LLM drifts
-    return {"category": "Other"}
-
-
-
-
 def notify_officials_node(state: GraphState):
-    category = state.get("category", "Unknown")
-    priority = state.get("priority", "Unknown")
-
-    # print(f"""
-    # 📩 New Complaint Assigned
-    # Department: {category}
-    # Priority: {priority}
-    # """)
+    # Can be extended later
     return {}
-
-
 
 workflow = StateGraph(GraphState)
 
@@ -238,6 +247,5 @@ workflow.add_edge("rag_retrieval", "resolution_generation")
 workflow.add_edge("resolution_generation", "save_to_db")
 workflow.add_edge("save_to_db", "notify_officials")
 workflow.add_edge("notify_officials", END)
-
 
 app = workflow.compile()

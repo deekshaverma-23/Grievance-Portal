@@ -5,15 +5,11 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+from langchain_community.llms import Ollama
 
 load_dotenv()
-api_key = os.getenv("GOOGLE_API_KEY")
-
-if not api_key:
-    print("Error: Google API key not found. Please check your .env file.")
-    exit()
 
 loader = DirectoryLoader(
     "docs",
@@ -39,19 +35,19 @@ vectorstore = Chroma.from_documents(
 retriever = vectorstore.as_retriever()
 
 prompt_template = """
-You are an AI assistant for a citizen grievance redressal system. Use the following context to answer the question.
-If you don't know the answer, just say that you cannot provide a specific resolution based on the available information.
+You are an AI assistant for a citizen grievance redressal system.
+Use the following context to answer the question concisely.
+If you don't know the answer, say you cannot provide a resolution based on available information.
 
 Question: {question}
 
 Context:
 {context}
 """
+
 rag_prompt = ChatPromptTemplate.from_template(prompt_template)
 
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=api_key)
-
-from langchain_core.runnables import RunnablePassthrough
+llm = Ollama(model="mistral")
 
 rag_chain = (
     {"context": retriever, "question": RunnablePassthrough()}
@@ -61,6 +57,7 @@ rag_chain = (
 )
 
 if __name__ == "__main__":
-    citizen_query = "My street has a big pothole near the park..."
+    citizen_query = "My street has a big pothole near the park. How can this be resolved?"
+    print("\n🧠 RAG Response:\n")
     response = rag_chain.invoke(citizen_query)
     print(response)
