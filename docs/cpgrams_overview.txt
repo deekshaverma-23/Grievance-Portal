@@ -1,0 +1,6 @@
+Centralized Public Grievance Redress and Monitoring System (CPGRAMS) is the official platform of the Government of India for registering and monitoring public grievances.
+It connects citizens to Ministries, States and Departments for service delivery and grievance redress.
+Each complaint is given a unique registration number.
+CPGRAMS mandates acknowledgement, tracking, forwarding to concerned departments, and resolution within specified timelines set by government policies.
+If a complaint is not resolved satisfactorily, citizens may file an appeal.
+CPGRAMS also provides escalation pathways and review mechanisms.

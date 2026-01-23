@@ -1,0 +1,6 @@
+Service Level Agreement (SLA) standards are defined by government Public Grievance guidelines:
+- Critical issues (threat to life, fire, hospital ICU failure) must be responded to within 4 hours.
+- High severity issues (prolonged disruption of essential services) should be resolved within 12–24 hours.
+- Medium severity issues (inconveniences affecting quality of life) are resolved within 24–72 hours.
+- Low severity issues (cosmetic or minor problems) are resolved within 72 hours to one week depending on department norms.
+Actual SLA may vary by department but must adhere to principles of timely service delivery under Citizen’s Charters.

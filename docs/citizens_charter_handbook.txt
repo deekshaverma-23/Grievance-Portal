@@ -1,0 +1,9 @@
+A Citizen’s Charter is a public declaration of service standards, grievance mechanisms, and delivery timelines by government bodies.
+Under DARPG (Department of Administrative Reforms & Public Grievances), Citizen’s Charters are issued for each Ministry/Department.
+They outline:
+- Services provided
+- Expected timeline
+- Who is responsible
+- Grievance redress mechanism
+- Escalation steps if service standards are not met
+Departments are required to publish Citizen’s Charters and monitor compliance.

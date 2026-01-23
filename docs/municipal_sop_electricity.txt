@@ -1,0 +1,11 @@
+Electricity Services SOP:
+- Transformer fires or exposed LIVE wires: immediate blackout and emergency team dispatch within 1 hour.
+- City-wide outages: restoration planning within 4–8 hours.
+- Voltage fluctuations: inspection within 24 hours.
+- Street lighting failures: correction within 48–72 hours.
+
+Department roles:
+- Field engineer
+- Dispatch team
+- Controller of utilities
+Escalate unresolved tasks after target SLA to senior engineer.

@@ -1,0 +1,14 @@
+The Municipal Healthcare Department handles:
+- Hospital ICU failures
+- Ambulance response delays
+- Medicine stock shortages in public clinics
+- Public health emergencies
+
+Process:
+1. Acknowledge complaint within 1 hour.
+2. Dispatch assessment team within 2 hours for critical cases.
+3. Provide immediate patient support (ambulance/alternate facility) if needed.
+4. Document actions taken and update grievance status.
+
+Escalation:
+If unaddressed within 4 hours, escalate to District Health Officer.

@@ -1,0 +1,6 @@
+Emergency response protocols for government services involve multi-agency coordination.
+Critical scenarios such as fire, explosion, hospital emergencies, gas leaks, structural failures must trigger:
+- Immediate notification of Police, Fire Brigade, Medical Emergency Services.
+- Deployment of responders within statutory timelines.
+- Coordination between departments is mandated under the Disaster Management Act and National Emergency Response Guidelines.
+Such events are top priority under SLA standards and require real-time escalation and follow-up.

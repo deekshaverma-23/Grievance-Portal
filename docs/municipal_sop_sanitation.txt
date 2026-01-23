@@ -1,0 +1,13 @@
+Sanitation Department handles:
+- Sewage overflows
+- Garbage collection
+- Public bins overflow
+- Mosquito breeding and health hazards
+
+Protocol:
+1. Identify hot spots via complaint categories.
+2. Immediate containment if health risk is present.
+3. Deploy sanitation crews within 4 hours for high risk.
+4. Clear routine garbage within scheduled rounds.
+Priority:
+Open sewage > overflowing bins > minor litter issues
