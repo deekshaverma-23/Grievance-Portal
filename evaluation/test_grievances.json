@@ -1,0 +1,42 @@
+[
+  {
+    "question": "Open sewage has been flowing on the street for three days and children are falling sick.",
+    "ground_truth": "Sanitation department emergency cleanup within 12 hours."
+  },
+  {
+    "question": "Transformer caught fire near the bus stand and electricity is out in the entire area.",
+    "ground_truth": "Electricity department immediate emergency response within 2 hours."
+  },
+  {
+    "question": "Pothole near school caused multiple accidents in the last week.",
+    "ground_truth": "Roads department barricading and repair within 6 hours."
+  },
+  {
+    "question": "Public hospital ICU has no oxygen cylinders available.",
+    "ground_truth": "Healthcare department emergency supply and escalation within 2 hours."
+  },
+  {
+    "question": "Illegal shops are occupying the footpath blocking pedestrians.",
+    "ground_truth": "Law and Order enforcement inspection and removal."
+  },
+  {
+    "question": "Water supply has been irregular for a week in our colony.",
+    "ground_truth": "Water department inspection and restoration within 24 hours."
+  },
+  {
+    "question": "Streetlight outside my house has not worked for two weeks.",
+    "ground_truth": "Electricity department routine repair within 48 hours."
+  },
+  {
+    "question": "Garbage has not been collected for four days.",
+    "ground_truth": "Sanitation crew dispatch within 24 hours."
+  },
+  {
+    "question": "Road construction abandoned for months creating traffic jams.",
+    "ground_truth": "Roads department contractor inspection and scheduling."
+  },
+  {
+    "question": "Loud music from a bar continues every night after midnight.",
+    "ground_truth": "Law and Order noise enforcement patrol."
+  }
+]

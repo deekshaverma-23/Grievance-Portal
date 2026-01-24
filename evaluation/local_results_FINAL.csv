@@ -1,0 +1,79 @@
+user_input,retrieved_contexts,response,reference,faithfulness,context_precision,context_recall,answer_relevancy
+Open sewage has been flowing on the street for three days and children are falling sick.,['Sanitation Department handles:\n- Sewage overflows\n- Garbage collection\n- Public bins overflow\n- Mosquito breeding and health hazards\n\nProtocol:\n1. Identify hot spots via complaint categories.\n2. Immediate containment if health risk is present.\n3. Deploy sanitation crews within 4 hours for high risk.\n4. Clear routine garbage within scheduled rounds.\nPriority:\nOpen sewage > overflowing bins > minor litter issues']," Immediate action is required due to the health risk posed by the open sewage situation. Priority protocol should be initiated as follows:
+
+1. Containment: The area with the open sewage should be isolated to prevent further spread and potential contamination.
+
+2. Emergency Response: Sanitation crews will be deployed immediately to clean up the open sewage.
+
+3. Health Services Notification: Local health services should be notified about the ongoing issue, as well as the sick children, for a comprehensive medical assessment and preventive measures.
+
+4. Follow-up Action: After the situation has been addressed, an inspection will be carried out to ensure that the problem does not reoccur and identify any potential causes for future reference.
+
+5. Communication: The public should be informed about the ongoing efforts to resolve this issue and any necessary precautions or advisories related to their health and safety.
+
+6. Documentation: Detailed records of this event, including time of reporting, response times, actions taken, and follow-up measures, will be maintained for future reference and potential improvements in sanitation department operations.",Sanitation department emergency cleanup within 12 hours.,1.0,0.9999999999,0.9230769230769231,0.683295327195375
+Transformer caught fire near the bus stand and electricity is out in the entire area.,['Electricity Services SOP:\n- Transformer fires or exposed LIVE wires: immediate blackout and emergency team dispatch within 1 hour.\n- City-wide outages: restoration planning within 4–8 hours.\n- Voltage fluctuations: inspection within 24 hours.\n- Street lighting failures: correction within 48–72 hours.\n\nDepartment roles:\n- Field engineer\n- Dispatch team\n- Controller of utilities\nEscalate unresolved tasks after target SLA to senior engineer.']," Immediate action is required due to the transformer fire near the bus stand causing a city-wide outage in the affected area. The following steps will be taken:
+
+1. Dispatch team: Immediately dispatch the emergency team to the location of the transformer fire for containment and safety measures.
+
+2. Controller of utilities: Initiate restoration planning within 4-8 hours to assess the damage and implement necessary repairs to restore power supply.
+
+3. Field engineer: Upon arrival at the scene, perform a thorough investigation to identify the cause of the transformer fire and take appropriate actions to ensure safety and prevent further incidents.
+
+4. Escalation: If the task remains unresolved after the target SLA, escalate it to the senior engineer for further assistance and prioritization.
+
+5. Communication: Keep the affected area informed about the progress of the restoration efforts and estimated time for power supply to be restored.
+
+6. Safety precautions: Remind everyone in the vicinity to exercise extreme caution due to the live wires and potential hazards caused by the transformer fire.
+
+Ensure that all team members are aware of their roles and responsibilities during this emergency situation, working together for a swift resolution and safe environment.",Electricity department immediate emergency response within 2 hours.,1.0,0.9999999999,1.0,0.7670713855127452
+Pothole near school caused multiple accidents in the last week.,"['Roads & Infrastructure SOP:\nCritical roadway hazards (sinkholes, major potholes) require barricading and repair planning within 6 hours.\nTemporary fixes must be deployed before full repair.\nSignage issues are medium priority and should be corrected within 48 hours.\nConstruction abandonment reports should trigger contractor notification and penalty evaluation.\nTraffic diversion plans must be shared for extended repairs.']"," The pothole near the school, being a critical roadway hazard due to its recent history of causing multiple accidents, requires immediate attention. Barricading should be deployed immediately and repair planning should commence within 6 hours. A temporary fix must also be deployed before the full repair can take place. To ensure the safety of school children, it is recommended that traffic diversion plans are implemented as soon as possible. Furthermore, this incident should trigger a contractor notification and penalty evaluation for any potential negligence or oversight regarding the pothole's maintenance.",Roads department barricading and repair within 6 hours.,0.8888888888888888,0.9999999999,1.0,0.8122582953384215
+Public hospital ICU has no oxygen cylinders available.,"['The Municipal Healthcare Department handles:\n- Hospital ICU failures\n- Ambulance response delays\n- Medicine stock shortages in public clinics\n- Public health emergencies\n\nProcess:\n1. Acknowledge complaint within 1 hour.\n2. Dispatch assessment team within 2 hours for critical cases.\n3. Provide immediate patient support (ambulance/alternate facility) if needed.\n4. Document actions taken and update grievance status.\n\nEscalation:\nIf unaddressed within 4 hours, escalate to District Health Officer.']"," Upon receipt of the complaint regarding the lack of oxygen cylinders in the public hospital ICU, we acknowledge your concern immediately and initiate an assessment within 2 hours by our dedicated response team. In the meantime, we will provide any available alternative resources to ensure patient care is not compromised. We will document the actions taken and update the grievance status accordingly.
+
+If the issue remains unresolved after 4 hours, the matter will be escalated to the District Health Officer for urgent attention and resolution. Your concern is of paramount importance to us, and we are committed to addressing it promptly and effectively.",Healthcare department emergency supply and escalation within 2 hours.,0.8,0.9999999999,0.5714285714285714,0.0
+Illegal shops are occupying the footpath blocking pedestrians.,"['Roads & Infrastructure SOP:\nCritical roadway hazards (sinkholes, major potholes) require barricading and repair planning within 6 hours.\nTemporary fixes must be deployed before full repair.\nSignage issues are medium priority and should be corrected within 48 hours.\nConstruction abandonment reports should trigger contractor notification and penalty evaluation.\nTraffic diversion plans must be shared for extended repairs.']"," In this context, since illegal shops are obstructing pedestrian walkways, which is not explicitly mentioned as a roadway hazard but rather an obstruction on the footpath, it may be considered as a signage issue or obstruction that impacts pedestrians' safety and mobility.
+
+However, given the severity of the obstruction, it would be advisable to prioritize this issue similarly to critical roadway hazards (sinkholes, major potholes). Therefore, barricading should be implemented as soon as possible, and a plan for the removal or relocation of these shops should be initiated within 6 hours.
+
+Additionally, it would be essential to ensure that pedestrians are aware of any potential hazards or diversions due to the removal process, so appropriate signage should be installed, correcting the signage issues within a reasonable time frame (preferably within 48 hours).
+
+Lastly, it may also be worth considering documenting such instances as construction abandonment reports to trigger contractor notification and penalty evaluation, especially if these shops have been illegally occupying the footpath for an extended period.",Law and Order enforcement inspection and removal.,0.625,0.9999999999,,0.7633470026165331
+Water supply has been irregular for a week in our colony.,['Water Supply Department SOP:\n- Inspect and isolate bursts within 2 hours.\n- Deploy tankers for critical shortages.\n- Monitor water quality and contamination reports.\n- Inform affected zones about service disruptions.\n\nTimeline expectations:\nCritical contamination: immediate action within 4 hours.\nMajor pipe bursts: containment within 6 hours.\nPressure irregularities: response within 24 hours.\n\nPublic advisories must be issued if water supply is unsafe.']," Dear Residents of [Colony Name],
+
+We apologize for the inconvenience you have been experiencing with your water supply over the past week. The Water Supply Department is actively working to address this issue and ensure the safety and continuity of your water service.
+
+Our initial investigations suggest a major pipe burst may be responsible for the irregularities in your colony's water supply. In line with our Standard Operating Procedures, our team has been dispatched to contain the burst and restore normal water supply as soon as possible.
+
+While our technicians work diligently to resolve this issue, we kindly request your patience and understanding. As a precautionary measure, we urge you to boil water before consumption until further notice. In case of any emergency or critical contamination reports, rest assured that our teams will prioritize immediate action within 4 hours, as per our timeline expectations.
+
+We will keep you updated on the progress of the repairs and the expected time for full restoration of normal water supply. Additionally, we will issue public advisories if it is deemed necessary to ensure your safety during this period.
+
+Thank you for your cooperation in this matter, and we appreciate your understanding as we work tirelessly to resolve this issue and maintain the quality of water services in our community.
+
+Sincerely,
+[Your Name]
+[Water Supply Department]
+[Contact Information]",Water department inspection and restoration within 24 hours.,0.4444444444444444,0.9999999999,0.0,0.8167156042880884
+Streetlight outside my house has not worked for two weeks.,['Electricity Services SOP:\n- Transformer fires or exposed LIVE wires: immediate blackout and emergency team dispatch within 1 hour.\n- City-wide outages: restoration planning within 4–8 hours.\n- Voltage fluctuations: inspection within 24 hours.\n- Street lighting failures: correction within 48–72 hours.\n\nDepartment roles:\n- Field engineer\n- Dispatch team\n- Controller of utilities\nEscalate unresolved tasks after target SLA to senior engineer.']," Dear Customer,
+
+Thank you for reaching out regarding the non-functioning streetlight outside your residence. We apologize for any inconvenience this may have caused you and we are committed to resolving this issue promptly.
+
+According to our Standard Operating Procedure (SOP), street lighting failures should be corrected within 48–72 hours. However, since the problem persists beyond that time frame, it qualifies as an unresolved task.
+
+In accordance with our protocols, the task will be escalated to a senior engineer for immediate attention. Our dispatch team will arrange for a field engineer to visit your location and rectify the issue at the earliest possible convenience.
+
+We appreciate your patience in this matter and assure you that we are doing everything in our power to restore normal service as quickly as we can.
+
+Best Regards,
+[Your Name]
+[Your Position]
+[Contact Information]",Electricity department routine repair within 48 hours.,0.9,0.9999999999,1.0,0.8393477296758363
+Garbage has not been collected for four days.,['Sanitation Department handles:\n- Sewage overflows\n- Garbage collection\n- Public bins overflow\n- Mosquito breeding and health hazards\n\nProtocol:\n1. Identify hot spots via complaint categories.\n2. Immediate containment if health risk is present.\n3. Deploy sanitation crews within 4 hours for high risk.\n4. Clear routine garbage within scheduled rounds.\nPriority:\nOpen sewage > overflowing bins > minor litter issues']," Priority is given to open sewage issues, however, in this case where garbage has not been collected for four days and it poses a potential health risk and nuisance, the Sanitation Department will deploy a sanitation crew immediately to address the issue. The crew will aim to complete the task within 4 hours. We apologize for any inconvenience caused and appreciate your patience while we work to resolve this matter.",Sanitation crew dispatch within 24 hours.,0.6666666666666666,0.9999999999,0.0,0.8195109258173024
+Road construction abandoned for months creating traffic jams.,"['Roads & Infrastructure SOP:\nCritical roadway hazards (sinkholes, major potholes) require barricading and repair planning within 6 hours.\nTemporary fixes must be deployed before full repair.\nSignage issues are medium priority and should be corrected within 48 hours.\nConstruction abandonment reports should trigger contractor notification and penalty evaluation.\nTraffic diversion plans must be shared for extended repairs.']"," Based on the provided SOP, the road construction abandoned for months should trigger a contractor notification immediately, followed by an evaluation of penalties for non-completion of work within the agreed timeframe. Additionally, since the road construction has been causing traffic jams, it's important to devise and implement a traffic diversion plan as soon as possible to alleviate the congestion, following the instructions mentioned in your SOP regarding extended repairs.",Roads department contractor inspection and scheduling.,,0.9999999999,0.0,0.7012890807168208
+Loud music from a bar continues every night after midnight.,['Law & Order SOP:\nHandled by Police and Civic enforcement agencies.\nCritical issues:\n- Violence\n- Threat to life\n- Large public disorder\n\nStandard Issues:\n- Encroachment\n- Noise complaints\n- Unlawful public drinking\n\nProtocols:\n1. Acknowledge within 30 minutes.\n2. Deploy patrol unit within 2 hours for critical.\n3. Medium issues dispatched within 6 hours.\n\nEscalation to senior officers if unresolved.']," In response to your inquiry about loud music from a bar continuing every night past midnight, here is the recommended course of action based on the provided Standard Operating Procedure (SOP):
+
+1. Acknowledge within 30 minutes: Recognize and document the report of the issue.
+
+2. Deploy patrol unit within 2 hours for critical issues: Since noise complaints are categorized as standard issues, a patrol unit will be dispatched to address the loud music problem within 6 hours.
+
+If the issue persists even after the patrol unit's response, it is advisable to escalate the matter to senior officers to ensure proper resolution and enforcement of the local noise ordinances.",Law and Order noise enforcement patrol.,0.75,0.9999999999,0.0,0.8631841482860105
