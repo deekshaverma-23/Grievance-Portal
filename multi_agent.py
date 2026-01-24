@@ -5,7 +5,7 @@ from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_community.llms import Ollama
+from langchain_ollama import OllamaLLM
 from langgraph.graph import StateGraph, END
 
 from database import save_complaint
@@ -32,7 +32,7 @@ vectorstore = Chroma(
 )
 retriever = vectorstore.as_retriever()
 
-llm = Ollama(model="mistral")
+llm = OllamaLLM(model="mistral")
 
 def rag_node(state: GraphState):
     complaint_text = state['complaint_text']

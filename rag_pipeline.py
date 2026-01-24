@@ -7,7 +7,8 @@ from langchain_chroma import Chroma
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
-from langchain_community.llms import Ollama
+from langchain_ollama import OllamaLLM
+llm = OllamaLLM(model="mistral")
 
 load_dotenv()
 
@@ -46,8 +47,6 @@ Context:
 """
 
 rag_prompt = ChatPromptTemplate.from_template(prompt_template)
-
-llm = Ollama(model="mistral")
 
 rag_chain = (
     {"context": retriever, "question": RunnablePassthrough()}
