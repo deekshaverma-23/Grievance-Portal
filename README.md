@@ -32,19 +32,10 @@ Database & Notification: The final analysis and resolution are saved to the data
 Python 3.8+
 Google Gemini API Key (available for free via Google AI Studio)
 
-## Steps
-1. Clone the Repository
-2. Create and Activate a Virtual Environment -
-   python -m venv venv
-3. Install Dependencies -
-   pip install -r requirements.txt
-4. Configure API Key -
-   Add your Google API key to the .env file:
-   GOOGLE_API_KEY="your_api_key_here"
-5. Run the RAG script to create the vector database - 
-   python rag_pipeline.py
-6. Initialize the Database -
-   python database.py
+## Commands-
+ollama serve
+ollama pull mistral
+streamlit run app.py
    
 ## Running the Application
 To start the application, simply run the Streamlit command - 
