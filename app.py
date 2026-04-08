@@ -63,15 +63,19 @@ def format_resolution(res):
     try:
         res = res.replace("```json", "").replace("```", "").strip()
         data = json.loads(res)
+
+        actions = data.get('immediate_actions', [])
+        actions_text = "\n- ".join(actions)
+
         return f"""
-        Summary: {data.get('summary')}
+Summary: {data.get('summary')}
 
-        Immediate Actions:
-        - {'\n- '.join(data.get('immediate_actions', []))}
+Immediate Actions:
+- {actions_text}
 
-        Department: {data.get('responsible_department')}
-        SLA: {data.get('sla_hours')} hours
-        """
+Department: {data.get('responsible_department')}
+SLA: {data.get('sla_hours')} hours
+"""
     except:
         return res
 
