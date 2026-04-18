@@ -37,7 +37,7 @@ ollama serve
 ollama pull mistral
 streamlit run app.py
 
-##Activate virtual environment- venv\Scripts\activate
+## Activate virtual environment- venv\Scripts\activate
    
 ## Running the Application
 To start the application, simply run the Streamlit command - 
