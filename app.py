@@ -68,14 +68,14 @@ def format_resolution(res):
         actions_text = "\n- ".join(actions)
 
         return f"""
-Summary: {data.get('summary')}
+            Summary: {data.get('summary')}
 
-Immediate Actions:
-- {actions_text}
+            Immediate Actions:
+            - {actions_text}
 
-Department: {data.get('responsible_department')}
-SLA: {data.get('sla_hours')} hours
-"""
+            Department: {data.get('responsible_department')}
+            SLA: {data.get('sla_hours')} hours
+            """
     except:
         return res
 
@@ -119,9 +119,28 @@ def admin_page():
     )
 
     df['Resolution'] = df['Resolution'].apply(format_resolution)
-    df = df.drop(columns=['Category'])  # Category removed as requested
+    df = df.drop(columns=['Category'])  
 
-    st.dataframe(df, use_container_width=True, hide_index=True)
+    def highlight_priority(row):
+        p = str(row["Priority"]).lower()
+
+        if p == "critical":
+            color = "background-color:#ffcccc; color:black;"
+        elif p == "high":
+            color = "background-color:#ffe5b4; color:black;"
+        elif p == "medium":
+            color = "background-color:#fff3b0; color:black;"
+        elif p == "low":
+            color = "background-color:#d4edda; color:black;"
+        else:
+            color = ""
+
+        return [color] * len(row)
+
+
+    styled_df = df.style.apply(highlight_priority, axis=1)
+
+    st.dataframe(styled_df, use_container_width=True, hide_index=True)
 
 def compute_urgency(row):
     severity_map = {"critical":4, "high":3, "medium":2, "low":1}
