@@ -36,6 +36,8 @@ Google Gemini API Key (available for free via Google AI Studio)
 ollama serve
 ollama pull mistral
 streamlit run app.py
+
+## Activate virtual environment- venv\Scripts\activate
    
 ## Running the Application
 To start the application, simply run the Streamlit command - 
