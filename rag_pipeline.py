@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from langchain_community.document_loaders import DirectoryLoader, TextLoader
+from langchain_community.document_loaders import DirectoryLoader, TextLoader, PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
@@ -12,13 +12,19 @@ llm = OllamaLLM(model="mistral")
 
 load_dotenv()
 
-loader = DirectoryLoader(
+txt_loader = DirectoryLoader(
     "docs",
     glob="**/*.txt",
-    loader_cls=lambda path: TextLoader(path, encoding="utf-8")
+    loader_cls=TextLoader
 )
 
-docs = loader.load()
+pdf_loader = DirectoryLoader(
+    "docs",
+    glob="**/*.pdf",
+    loader_cls=PyPDFLoader
+)
+
+docs = txt_loader.load() + pdf_loader.load()
 
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 split_docs = text_splitter.split_documents(docs)
@@ -57,6 +63,6 @@ rag_chain = (
 
 if __name__ == "__main__":
     citizen_query = "My street has a big pothole near the park. How can this be resolved?"
-    print("\n🧠 RAG Response:\n")
+    print("\n RAG Response:\n")
     response = rag_chain.invoke(citizen_query)
     print(response)

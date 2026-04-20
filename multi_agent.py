@@ -7,7 +7,6 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import OllamaLLM
 from langgraph.graph import StateGraph, END
-
 from database import save_complaint
 
 class GraphState(TypedDict):
@@ -46,6 +45,7 @@ def severity_node(state: GraphState):
         """
         Classify severity of the complaint into one of:
         critical, high, medium, low.
+        Don't use any other words except from these mentioned above.
 
         Complaint: {text}
 
@@ -124,15 +124,22 @@ def sentiment_node(state: GraphState):
     return {"sentiment": "negative"}
 
 def priority_node(state: GraphState):
-    severity = state.get("severity", "low")
-    credibility = state.get("credibility", "factual")
+    severity = state.get("severity", "low").strip().lower()
+    credibility = state.get("credibility", "factual").strip().lower()
 
     if severity == "critical":
         return {"priority": "critical"}
-    if severity == "high" and credibility != "highly exaggerated":
+
+    if severity == "high":
+        if credibility == "highly exaggerated":
+            return {"priority": "medium"}
         return {"priority": "high"}
+
     if severity == "medium":
+        if credibility == "highly exaggerated":
+            return {"priority": "low"}
         return {"priority": "medium"}
+
     return {"priority": "low"}
 
 def category_node(state: GraphState):
